@@ -131,7 +131,7 @@ public class PixelColor_lib {
 		}
 	}
 	
-	public double[] getCos(double [][]teacher, int []test){
+	public double[] getCos(double [][]teacher, double []test){
 		double [] cos = new double[teacher.length];
 		double test_scalar = 0;
 		//testのスカラーを求める
@@ -186,5 +186,51 @@ public class PixelColor_lib {
 			mysql.insertTeacher(teacher_normal[i], "teacher"+String.format("%03d", i+1)+".jpg","/img/teacher/teacher"+String.format("%03d", i+1)+".jpg");//連番に注意
 		}
 		System.out.println("teacher_data : "+Arrays.deepToString(teacher_normal));
+	}
+	
+	public void getTestData(int teacher_number, int test_number, String test_filename, String outputname) {
+		//教師データCSV取り込み
+		int [][]teacher = new int[teacher_number][18];
+		double [][]teacher_normal = new double[teacher_number][18];
+		for(int i = 0; i < teacher_number; i++) {
+			String filename = "teacher"+String.format("%03d", i+1);
+			PixelColor_main pmain = new PixelColor_main();
+			teacher[i] = pmain.getCSV2("csv/"+filename+".csv", 18);
+		}
+		//教師データを100%に直す
+		for(int i = 0; i < teacher.length;i++) {
+			double sum = 0;
+			for(int j = 0; j < teacher[i].length; j++) {
+				sum += teacher[i][j];
+			}
+			for(int j = 0; j < teacher[i].length; j++) {
+				teacher_normal[i][j] = teacher[i][j] * 100 / sum;
+			}			
+		}
+		//テストデータの作成とcos類似度
+		//filename = "2019_11_01/test20191101_";
+		//String outputname = "2019_11_01/test20191101";
+		//int row = 369;
+		double [][] cos = new double[test_number][18];
+		PixelColor_lib plib = null;
+		for(int i = 1; i <= test_number; i++) {
+			//filename = filename+i;
+			plib = new PixelColor_lib("test/"+test_filename+i+".jpg");
+			int [] color_dist = plib.getColor();
+			//テストデータを100%に直す
+			double sum = 0;
+			double color_dist_normal[] = new double[18];
+			for(int j = 0; j < color_dist.length; j++) {
+				sum += color_dist[j];
+			}
+			for(int j = 0; j < color_dist.length; j++) {
+				color_dist_normal[j] = color_dist[j] * 100 / sum;	
+			}
+			cos[i-1] = plib.getCos(teacher_normal, color_dist_normal);
+			Graph graph = new Graph(color_dist);
+			graph.setBounds(5,5,755,455);
+			graph.setVisible(true);
+		}
+		plib.exportCsv2(outputname, cos);
 	}
 }

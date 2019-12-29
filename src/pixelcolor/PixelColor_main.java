@@ -16,9 +16,17 @@ public class PixelColor_main {
 
 	public static void main(String[] args) {
 		String filename;
+		int teacher_number = 13;//教師データ数
 		//教師データの作成(011,012,013はダメデータ、6/11,7/1,6/20)
 		PixelColor_lib tlib = new PixelColor_lib();
-		tlib.createTeacher(13);
+		//tlib.createTeacher(teacher_number);//必要な時に有効にする
+		
+		//テストデータのcos類似度の算出
+		tlib.getTestData(teacher_number, 193, "2019_11_01/test20191101_", "2019_11_01/test20191101");
+		//20191230ここまで
+		//フォルダ、ファイル名、ファイル数の指定は自動化したい
+		//cos類似度を取得したら、max値から閾値より大きいものをDBへアップロード
+		
 		
 		//教師データの作成
 		/*
