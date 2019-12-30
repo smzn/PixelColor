@@ -233,4 +233,23 @@ public class PixelColor_lib {
 		}
 		plib.exportCsv2(outputname, cos);
 	}
+	
+	public void testUpload(int test_number, int teacher_number, String filename, String t_filename, String path, String picture_date, double index_value) {
+		//Testデータcos類似度CSV取り込み
+		PixelColor_main pmain = new PixelColor_main();
+		double cos[][] = pmain.getCSV3("test/"+filename+".csv", test_number, teacher_number);
+		System.out.println("TestData : "+Arrays.deepToString(cos));
+		
+		MySQL mysql = new MySQL();
+		//cos類似度が閾値以上のものを選出
+		for(int i = 0; i < cos.length; i++) {
+			for(int j = 0; j < cos[i].length; j++) {
+				if(cos[i][j] > index_value) {
+					//閾値以上の場合DBへアップロード
+					//String t_filename2 = t_filename+"_"+i+".jpg";
+					mysql.insertTest(t_filename+"_"+i+".jpg", picture_date, path+t_filename+"_"+i+".jpg", j+1, cos[i][j]);
+				}
+			}
+		}
+	}
 }

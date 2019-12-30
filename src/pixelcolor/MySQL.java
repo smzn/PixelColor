@@ -47,4 +47,19 @@ public class MySQL {
         System.out.println("教師CSV : Insert完了");
 	}
 	
+	public void insertTest(String name, String picture_date, String path, int teacher_id, double value) {
+		System.out.println("cos類似度 : Insert開始");
+        try{
+        	StringBuffer buf = new StringBuffer();
+			buf.append("INSERT INTO tests(name, date_id, path, teacher_id, value) VALUES");
+            buf.append("('"+name+"','"+picture_date+"','"+path+"',"+teacher_id+","+value+")");
+            
+        	String sql = buf.toString();
+            stmt.execute (sql);
+        }
+        catch (SQLException e) {
+                e.printStackTrace();
+        }
+        System.out.println("cos類似度 : Insert完了");
+	}
 }
